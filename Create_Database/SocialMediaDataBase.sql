@@ -1,0 +1,2 @@
+CREATE DATABASE SocialMediaDataBase;
+USE SocialMediaDataBase;
