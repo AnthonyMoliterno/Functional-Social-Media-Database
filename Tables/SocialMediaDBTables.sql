@@ -15,7 +15,7 @@ CREATE TABLE UserInformation (
 );
 
 -- Post *Check any users post information, check specific posts with postid
-CREATE TABLE Posts (
+CREATE TABLE Post (
 	PostId INT PRIMARY KEY IDENTITY(1, 1),
 	UserId INT NOT NULL,
 	TextContent NVARCHAR(280) NULL,
@@ -25,8 +25,22 @@ CREATE TABLE Posts (
 	PostDate DATE NOT NULL DEFAULT GETDATE(),
 	FOREIGN KEY (UserId) REFERENCES UserInformation(UserId) ON DELETE CASCADE,
 
-	-- Ensure A comment has a TextContent or MediaUrl
+	-- Ensure a comment has a TextContent or MediaUrl
 	CONSTRAINT CHK_Post_Valid CHECK (TextContent IS NOT NULL OR MediaURL IS NOT NULL)
+);
+
+CREATE TABLE PostMedia (
+    MediaId INT PRIMARY KEY IDENTITY,
+    PostId INT NOT NULL,
+    UserId INT NOT NULL,
+    MediaUrl VARCHAR(255) NOT NULL,
+    MediaType VARCHAR(50) NOT NULL,
+    MediaDate DATE NOT NULL DEFAULT GETDATE(),
+    FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE,
+    FOREIGN KEY (UserId) REFERENCES UserInformation(UserId),
+	
+	--Ensure media types are valid
+    CONSTRAINT CHK_MediaType CHECK (MediaType IN ('image', 'video', 'audio'))
 );
 
 -- Comments *Checking comments on post, comments made by specific user,
