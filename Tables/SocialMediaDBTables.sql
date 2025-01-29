@@ -104,8 +104,6 @@ CREATE TABLE Following (
     CONSTRAINT CHK_NoSelfFollow CHECK (FollowerId != UserId)
 );
 
-
-
 -- Index for Post table to improve searching and filtering by user
 CREATE INDEX IDX_Post_UserId ON Post(UserId);
 
