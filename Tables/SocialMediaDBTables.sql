@@ -1,8 +1,10 @@
+--CREATE DATABASE SocialMediaDataBase;
+
 USE SocialMediaDataBase;
 
 -- Users information *login, etc
 CREATE TABLE UserInformation (
-	UserId INT PRIMARY KEY IDENTITY(1000000, 1),
+	UserId INT PRIMARY KEY IDENTITY(100000, 1),
 	Username NVARCHAR(24) NOT NULL,
 	EmailAddress NVARCHAR(254) NOT NULL,
 	CreationDate SMALLDATETIME NOT NULL DEFAULT GETDATE(),
@@ -28,7 +30,7 @@ CREATE TABLE Post (
 	FOREIGN KEY (UserId) REFERENCES UserInformation(UserId) ON DELETE CASCADE,
 
 	-- Ensure a comment has a TextContent or MediaUrl
-	CONSTRAINT CHK_Post_Valid CHECK (TextContent IS NOT NULL OR MediaURL IS NOT NULL)
+	CONSTRAINT CHK_Post_Valid CHECK (TextContent IS NOT NULL OR MediaUrl IS NOT NULL)
 );
 
 CREATE TABLE PostMedia (
@@ -54,10 +56,10 @@ CREATE TABLE PostComments (
 	CommentDate DATE NOT NULL DEFAULT GETDATE(),
 	MediaUrl VARCHAR(255) NULL,
 	FOREIGN KEY (UserId) REFERENCES UserInformation(UserId),
-	FOREIGN KEY (PostId) REFERENCES Posts(PostId) ON DELETE CASCADE,
+	FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE,
 
 	-- Ensure a comment has either a CommentText or MediaUrl
-	CONSTRAINT CHK_Post_Valid CHECK (CommentText IS NOT NULL OR MediaURL IS NOT NULL)
+	CONSTRAINT CHK_Comment_Valid CHECK (CommentText IS NOT NULL OR MediaUrl IS NOT NULL)
 );
 
 -- Comments made with multiple images or videos attached 
@@ -81,7 +83,7 @@ CREATE TABLE PostLikes (
 	LikedDate DATE NOT NULL DEFAULT GETDATE(),
 	PRIMARY KEY (Userid, Postid),
 	FOREIGN KEY (UserId) REFERENCES UserInformation(UserId),
-	FOREIGN KEY (PostId) REFERENCES Posts(PostId)
+	FOREIGN KEY (PostId) REFERENCES Post(PostId)
 	);
 
 CREATE TABLE Followers (
@@ -91,7 +93,7 @@ CREATE TABLE Followers (
 	PRIMARY KEY (FollowerId, FollowedId),
 	FOREIGN KEY (FollowerId) REFERENCES UserInformation(UserId) ON DELETE CASCADE,
 	FOREIGN KEY (FollowedId) REFERENCES UserInformation(UserId) ON DELETE CASCADE,
-	CONSTRAINT CHK_NoSelfFollow CHECK (FollowerId != FollowerId)
+	CONSTRAINT CHK_NoSelfFollow CHECK (FollowerId != FollowedId)
 	);
 
 CREATE TABLE Following (
